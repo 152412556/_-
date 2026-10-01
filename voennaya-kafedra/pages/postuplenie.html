@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Поступление — Военная кафедра</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo">
+        <div class="logo-emblem">★</div>
+        <div class="logo-text">
+          <div class="uni">НАО «Торайгыров университет»</div>
+          <div class="dept">Военная кафедра</div>
+        </div>
+      </a>
+      <nav class="nav-main">
+        <a href="../index.html">Главная</a>
+        <a href="o-kafedre.html">О кафедре</a>
+        <a href="postuplenie.html" class="active">Поступление</a>
+        <a href="podgotovka.html">Подготовка</a>
+        <a href="studentu.html">Студенту</a>
+        <a href="novosti.html">Новости</a>
+        <a href="dokumenty.html">Документы</a>
+        <a href="kontakty.html">Контакты</a>
+      </nav>
+      <div class="header-actions">
+        <a href="login.html" class="btn-login">Войти</a>
+        <button class="burger" id="burger" aria-label="Меню">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="mobile-nav" id="mobileNav">
+      <a href="../index.html">Главная</a>
+      <a href="o-kafedre.html">О кафедре</a>
+      <a href="postuplenie.html" class="active">Поступление</a>
+      <a href="podgotovka.html">Подготовка</a>
+      <a href="studentu.html">Студенту</a>
+      <a href="novosti.html">Новости</a>
+      <a href="dokumenty.html">Документы</a>
+      <a href="kontakty.html">Контакты</a>
+      <a href="login.html" class="btn-login">Войти</a>
+    </div>
+  </header>
+
+  <div class="page-header">
+    <div class="container">
+      <h1>Поступление</h1>
+      <div class="breadcrumb"><a href="../index.html">Главная</a> / Поступление</div>
+    </div>
+  </div>
+
+  <div class="page-content">
+    <div class="container">
+      <div class="content-card">
+        <h2>Условия поступления</h2>
+        <p>На военную кафедру принимаются студенты НАО «Торайгыров университет», прошедшие конкурсный отбор. Обучение ведётся параллельно с основной образовательной программой.</p>
+        <h3>Требования к кандидатам</h3>
+        <ul>
+          <li>Гражданство Республики Казахстан</li>
+          <li>Возраст — в соответствии с требованиями Министерства обороны РК</li>
+          <li>Состояние здоровья — годность по заключению военно-врачебной комиссии</li>
+          <li>Уровень физической подготовленности — выполнение нормативов</li>
+          <li>Успеваемость — отсутствие академических задолженностей</li>
+          <li>Стрессоустойчивость и морально-психологическая готовность</li>
+        </ul>
+        <p class="text-muted" style="font-size:14px;margin-top:12px">Обучение доступно как для юношей, так и для девушек.</p>
+      </div>
+
+      <div class="content-card">
+        <h2>Перечень документов</h2>
+        <ul>
+          <li>Заявление установленного образца</li>
+          <li>Копия удостоверения личности</li>
+          <li>Справка о состоянии здоровья (форма 086-У) и заключение ВВК</li>
+          <li>Справка об отсутствии судимости</li>
+          <li>Фотографии 3×4 (4 шт.)</li>
+          <li>Характеристика с места учёбы</li>
+          <li>Выписка из зачётной книжки / академическая справка</li>
+        </ul>
+        <p class="mt-16">Актуальные бланки заявлений доступны в разделе <a href="dokumenty.html" style="color:var(--primary);font-weight:600">Документы</a>.</p>
+      </div>
+
+      <div class="content-card">
+        <h2>Нормативы физической подготовки</h2>
+        <p>Кандидаты сдают нормативы по физической подготовке. Примерный перечень (уточняйте актуальные значения при подаче документов):</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Упражнение</th>
+              <th>Юноши</th>
+              <th>Девушки</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Бег 100 м</td>
+              <td>до 14,5 с</td>
+              <td>до 17,0 с</td>
+            </tr>
+            <tr>
+              <td>Бег 3000 м / 2000 м</td>
+              <td>до 13:00</td>
+              <td>до 12:30</td>
+            </tr>
+            <tr>
+              <td>Подтягивание / отжимание</td>
+              <td>от 10 раз</td>
+              <td>от 12 раз</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="text-muted" style="font-size:13px">Нормативы носят ориентировочный характер и могут корректироваться.</p>
+      </div>
+
+      <div class="content-card">
+        <h2>Часто задаваемые вопросы</h2>
+        <div class="faq-item">
+          <button class="faq-q">Кто может поступить на военную кафедру? <span>+</span></button>
+          <div class="faq-a">Студенты университета, прошедшие медицинский отбор, физическую подготовку и не имеющие академических задолженностей. Принимаются как юноши, так и девушки.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Какое звание присваивается по окончании? <span>+</span></button>
+          <div class="faq-a">По программе офицеров запаса — лейтенант запаса. По программе сержантов запаса — соответствующее сержантское звание запаса.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Когда начинается приём документов? <span>+</span></button>
+          <div class="faq-a">Обычно приём открывается весной. Точные даты публикуются в разделе «Новости» и на главной странице.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Нужно ли служить после окончания кафедры? <span>+</span></button>
+          <div class="faq-a">Выпускники зачисляются в запас Вооружённых Сил РК. Призыв на срочную службу для прошедших военную кафедру, как правило, не применяется (согласно действующему законодательству).</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom" style="border:none;padding-top:0">
+        <div>© 2026 НАО «Торайгыров университет». Военная кафедра.</div>
+        <div class="footer-slogan">ЧЕСТЬ · ДОЛГ · ОТВАГА</div>
+      </div>
+    </div>
+  </footer>
+  <script src="../js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Личный кабинет преподавателя — Военная кафедра</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo">
+        <div class="logo-emblem">★</div>
+        <div class="logo-text">
+          <div class="uni">НАО «Торайгыров университет»</div>
+          <div class="dept">Военная кафедра</div>
+        </div>
+      </a>
+      <nav class="nav-main">
+        <a href="../index.html">Главная</a>
+        <a href="o-kafedre.html">О кафедре</a>
+        <a href="postuplenie.html">Поступление</a>
+        <a href="podgotovka.html">Подготовка</a>
+        <a href="studentu.html">Студенту</a>
+        <a href="novosti.html">Новости</a>
+        <a href="dokumenty.html">Документы</a>
+        <a href="kontakty.html">Контакты</a>
+      </nav>
+      <div class="header-actions">
+        <span class="badge-role">Преподаватель</span>
+        <a href="#" class="btn-login" onclick="logout(); return false;">Выйти</a>
+        <button class="burger" id="burger" aria-label="Меню">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="mobile-nav" id="mobileNav">
+      <a href="../index.html">Главная</a>
+      <a href="cabinet-teacher.html" class="active">Кабинет</a>
+      <a href="#" onclick="logout(); return false;" class="btn-login">Выйти</a>
+    </div>
+  </header>
+
+  <div class="cabinet-layout">
+    <aside class="cabinet-sidebar">
+      <div class="cabinet-user">
+        <div class="cabinet-avatar" id="sideAvatar">П</div>
+        <h3 id="sideName">Преподаватель</h3>
+        <p id="sideMeta">Преподаватель</p>
+      </div>
+      <nav class="cabinet-menu">
+        <a href="#overview" class="active" data-section="overview">📊 Обзор</a>
+        <a href="#schedule" data-section="schedule">📅 Расписание</a>
+        <a href="#grades" data-section="grades">📝 Оценки</a>
+        <a href="#announce" data-section="announce">📢 Объявления</a>
+        <a href="#materials" data-section="materials">📚 Материалы</a>
+        <a href="#" class="logout" onclick="logout(); return false;">🚪 Выйти</a>
+      </nav>
+    </aside>
+
+    <div class="cabinet-main">
+      <div id="toast" class="alert alert-success" style="display:none"></div>
+
+      <section id="sec-overview">
+        <h1>Панель преподавателя</h1>
+        <p class="page-sub" id="welcomeText">Загрузка...</p>
+        <div class="stats-grid">
+          <div class="stat-card"><div class="value" id="statLessons">—</div><div class="label">Занятий в расписании</div></div>
+          <div class="stat-card"><div class="value" id="statGrades">—</div><div class="label">Выставлено оценок</div></div>
+          <div class="stat-card"><div class="value" id="statAnn">—</div><div class="label">Объявлений</div></div>
+          <div class="stat-card"><div class="value" id="statMats">—</div><div class="label">Материалов</div></div>
+        </div>
+        <div class="cabinet-section">
+          <div class="cabinet-section-header"><h2>Быстрые действия</h2></div>
+          <div class="cabinet-section-body">
+            <div class="btn-group">
+              <button class="btn btn-dark btn-sm" onclick="showSection('grades')">Выставить оценку</button>
+              <button class="btn btn-dark btn-sm" onclick="showSection('schedule')">Добавить занятие</button>
+              <button class="btn btn-dark btn-sm" onclick="showSection('announce')">Новое объявление</button>
+              <button class="btn btn-dark btn-sm" onclick="showSection('materials')">Добавить материал</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="sec-schedule" style="display:none">
+        <h1>Управление расписанием</h1>
+        <p class="page-sub">Добавление и просмотр занятий</p>
+        <div class="cabinet-section">
+          <div class="cabinet-section-header"><h2>Добавить занятие</h2></div>
+          <div class="cabinet-section-body">
+            <form id="scheduleForm">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>День недели</label>
+                  <select id="sch-day" required>
+                    <option>Понедельник</option><option>Вторник</option><option>Среда</option>
+                    <option>Четверг</option><option>Пятница</option><option>Суббота</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Время</label>
+                  <input type="text" id="sch-time" placeholder="09:00–10:30" required>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Дисциплина</label>
+                  <input type="text" id="sch-subject" placeholder="Тактическая подготовка" required>
+                </div>
+                <div class="form-group">
+                  <label>Аудитория / место</label>
+                  <input type="text" id="sch-room" placeholder="Ауд. 12" required>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Группа</label>
+                  <select id="sch-group">
+                    <option>ВК-301</option><option>ВК-302</option><option>ВК-201</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Преподаватель</label>
+                  <input type="text" id="sch-teacher" required>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary btn-sm">Добавить в расписание</button>
+            </form>
+          </div>
+        </div>
+        <div class="cabinet-section">
+          <div class="cabinet-section-header"><h2>Текущее расписание</h2></div>
+          <div class="cabinet-section-body">
+            <table class="cabinet-table" id="scheduleTable">
+              <thead><tr><th>День</th><th>Время</th><th>Дисциплина</th><th>Место</th><th>Группа</th><th>Преподаватель</th><th></th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="sec-grades" style="display:none">
+        <h1>Выставление оценок</h1>
+        <p class="page-sub">Выберите группу, студента, дисциплину и балл</p>
+        <div class="cabinet-section">
+          <div class="cabinet-section-header"><h2>Новая оценка</h2></div>
+          <div class="cabinet-section-body">
+            <form id="gradeForm">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Группа</label>
+                  <select id="gr-group">
+                    <option>ВК-301</option><option>ВК-302</option><option>ВК-201</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Студент (ФИО)</label>
+                  <input type="text" id="gr-student" list="studentsList" placeholder="Иванов Алексей Сергеевич" required>
+                  <datalist id="studentsList">
+                    <option value="Иванов Алексей Сергеевич">
+                    <option value="Петров Дмитрий Игоревич">
+                    <option value="Смагулова Алия Ерлановна">
+                    <option value="Касымов Нурлан Болатович">
+                  </datalist>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Дисциплина</label>
+                  <select id="gr-subject">
+                    <option>Тактическая подготовка</option>
+                    <option>Огневая подготовка</option>
+                    <option>Строевая подготовка</option>
+                    <option>Военная топография</option>
+                    <option>Уставы ВС РК</option>
+                    <option>Военно-патриотическое воспитание</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Оценка</label>
+                  <select id="gr-grade">
+                    <option value="5">5 — отлично</option>
+                    <option value="4">4 — хорошо</option>
+                    <option value="3">3 — удовлетворительно</option>
+                    <option value="2">2 — неудовлетворительно</option>
+                  </select>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary btn-sm">Выставить оценку</button>
+            </form>
+          </div>
+        </div>
+        <div class="cabinet-section">
+          <div class="cabinet-section-header"><h2>Журнал оценок</h2></div>
+          <div class="cabinet-section-body">
+            <table class="cabinet-table" id="gradesTable">
+              <thead><tr><th>Студент</th><th>Группа</th><th>Дисциплина</th><th>Оценка</th><th>Дата</th><th></th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="sec-announce" style="display:none">
+        <h1>Объявления</h1>
+        <p class="page-sub">Публикация объявлений для студентов</p>
+        <div class="cabinet-section">
+          <div class="cabinet-section-header"><h2>Новое объявление</h2></div>
+          <div class="cabinet-section-body">
+            <form id="announceForm">
+              <div class="form-row full">
+                <div class="form-group">
+                  <label>Заголовок</label>
+                  <input type="text" id="ann-title" required placeholder="Тема объявления">
+                </div>
+              </div>
+              <div class="form-row full">
+                <div class="form-group">
+                  <label>Текст</label>
+                  <textarea id="ann-text" required placeholder="Текст объявления..."></textarea>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary btn-sm">Опубликовать</button>
+            </form>
+          </div>
+        </div>
+        <div id="announceList"></div>
+      </section>
+
+      <section id="sec-materials" style="display:none">
+        <h1>Учебные материалы</h1>
+        <p class="page-sub">Памятки, методички, инструкции по безопасности</p>
+        <div class="cabinet-section">
+          <div class="cabinet-section-header"><h2>Добавить материал</h2></div>
+          <div class="cabinet-section-body">
+            <form id="materialForm">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Название</label>
+                  <input type="text" id="mat-title" required>
+                </div>
+                <div class="form-group">
+                  <label>Категория</label>
+                  <select id="mat-cat">
+                    <option>Памятка</option><option>Безопасность</option>
+                    <option>Материал</option><option>Методичка</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row full">
+                <div class="form-group">
+                  <label>Текст / описание</label>
+                  <textarea id="mat-text" required></textarea>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary btn-sm">Сохранить материал</button>
+            </form>
+          </div>
+        </div>
+        <div id="materialsList"></div>
+      </section>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-config.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    initSupabase();
+    let auth = null;
+
+    function toast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.style.display = 'block';
+      setTimeout(() => { t.style.display = 'none'; }, 2500);
+    }
+
+    function showSection(id) {
+      ['overview', 'schedule', 'grades', 'announce', 'materials'].forEach(s => {
+        const el = document.getElementById('sec-' + s);
+        if (el) el.style.display = s === id ? 'block' : 'none';
+      });
+      document.querySelectorAll('.cabinet-menu a[data-section]').forEach(a => {
+        a.classList.toggle('active', a.dataset.section === id);
+      });
+    }
+    window.showSection = showSection;
+
+    async function renderSchedule() {
+      const data = await getSchedule();
+      document.getElementById('statLessons').textContent = data.length;
+      const body = document.querySelector('#scheduleTable tbody');
+      body.innerHTML = '';
+      data.forEach(s => {
+        body.innerHTML += `<tr>
+          <td>${s.day}</td><td>${s.time}</td><td>${s.subject}</td>
+          <td>${s.room || ''}</td><td>${s.group}</td><td>${s.teacher || ''}</td>
+          <td><button class="btn btn-sm btn-danger" data-del-sch="${s.id}">✕</button></td>
+        </tr>`;
+      });
+      body.querySelectorAll('[data-del-sch]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          await deleteSchedule(btn.dataset.delSch);
+          await renderSchedule();
+          toast('Занятие удалено');
+        });
+      });
+    }
+
+    async function renderGrades() {
+      const data = await getGrades();
+      document.getElementById('statGrades').textContent = data.length;
+      const body = document.querySelector('#gradesTable tbody');
+      body.innerHTML = '';
+      data.forEach(g => {
+        body.innerHTML += `<tr>
+          <td>${g.student}</td><td>${g.group || ''}</td><td>${g.subject}</td>
+          <td><span class="grade ${gradeClass(g.grade)}">${g.grade}</span></td>
+          <td>${g.date || ''}</td>
+          <td><button class="btn btn-sm btn-danger" data-del-gr="${g.id}">✕</button></td>
+        </tr>`;
+      });
+      body.querySelectorAll('[data-del-gr]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          await deleteGrade(btn.dataset.delGr);
+          await renderGrades();
+          toast('Оценка удалена');
+        });
+      });
+    }
+
+    async function renderAnnouncements() {
+      const data = await getAnnouncements();
+      document.getElementById('statAnn').textContent = data.length;
+      const list = document.getElementById('announceList');
+      list.innerHTML = '';
+      data.forEach(a => {
+        const div = document.createElement('div');
+        div.className = 'cabinet-section';
+        div.innerHTML = `
+          <div class="cabinet-section-header">
+            <h2>${a.title}</h2>
+            <div class="btn-group">
+              <span style="font-size:12px;color:var(--text-muted);align-self:center">${a.date}</span>
+              <button class="btn btn-sm btn-danger" data-del-ann="${a.id}">Удалить</button>
+            </div>
+          </div>
+          <div class="cabinet-section-body">
+            <p style="margin:0 0 6px;font-size:14px;color:var(--text-muted);line-height:1.6">${a.text}</p>
+            <small style="color:var(--text-muted)">Автор: ${a.author || ''}</small>
+          </div>`;
+        list.appendChild(div);
+      });
+      list.querySelectorAll('[data-del-ann]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          await deleteAnnouncement(btn.dataset.delAnn);
+          await renderAnnouncements();
+          toast('Объявление удалено');
+        });
+      });
+    }
+
+    async function renderMaterials() {
+      const data = await getMaterials();
+      document.getElementById('statMats').textContent = data.length;
+      const list = document.getElementById('materialsList');
+      list.innerHTML = '';
+      data.forEach(m => {
+        const div = document.createElement('div');
+        div.className = 'cabinet-section';
+        div.innerHTML = `
+          <div class="cabinet-section-header">
+            <h2>${m.title}</h2>
+            <div class="btn-group">
+              <span class="badge-role">${m.category}</span>
+              <button class="btn btn-sm btn-danger" data-del-mat="${m.id}">Удалить</button>
+            </div>
+          </div>
+          <div class="cabinet-section-body">
+            <p style="margin:0;font-size:14px;color:var(--text-muted);line-height:1.6">${m.text}</p>
+          </div>`;
+        list.appendChild(div);
+      });
+      list.querySelectorAll('[data-del-mat]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          await deleteMaterial(btn.dataset.delMat);
+          await renderMaterials();
+          toast('Материал удалён');
+        });
+      });
+    }
+
+    (async function init() {
+      auth = await requireAuthAsync(['teacher']);
+      if (!auth) return;
+
+      document.getElementById('sideAvatar').textContent = auth.initials || 'П';
+      document.getElementById('sideName').textContent = auth.short || auth.name;
+      document.getElementById('sideMeta').textContent =
+        (auth.rank || '') + (auth.position ? ' · ' + auth.position : 'Преподаватель');
+      document.getElementById('welcomeText').textContent = auth.name;
+      document.getElementById('sch-teacher').value = auth.short || auth.name;
+
+      document.querySelectorAll('.cabinet-menu a[data-section]').forEach(a => {
+        a.addEventListener('click', e => {
+          e.preventDefault();
+          showSection(a.dataset.section);
+        });
+      });
+
+      document.getElementById('scheduleForm').addEventListener('submit', async e => {
+        e.preventDefault();
+        try {
+          await addSchedule({
+            day: document.getElementById('sch-day').value,
+            time: document.getElementById('sch-time').value,
+            subject: document.getElementById('sch-subject').value,
+            room: document.getElementById('sch-room').value,
+            group: document.getElementById('sch-group').value,
+            teacher: document.getElementById('sch-teacher').value
+          });
+          await renderSchedule();
+          e.target.reset();
+          document.getElementById('sch-teacher').value = auth.short || auth.name;
+          toast('Занятие добавлено');
+        } catch (err) {
+          toast('Ошибка: ' + (err.message || err));
+        }
+      });
+
+      document.getElementById('gradeForm').addEventListener('submit', async e => {
+        e.preventDefault();
+        try {
+          await addGrade({
+            student: document.getElementById('gr-student').value,
+            group: document.getElementById('gr-group').value,
+            subject: document.getElementById('gr-subject').value,
+            grade: parseInt(document.getElementById('gr-grade').value, 10),
+            date: new Date().toISOString().slice(0, 10),
+            teacher: auth.short || auth.name
+          });
+          await renderGrades();
+          toast('Оценка выставлена');
+        } catch (err) {
+          toast('Ошибка: ' + (err.message || err));
+        }
+      });
+
+      document.getElementById('announceForm').addEventListener('submit', async e => {
+        e.preventDefault();
+        try {
+          await addAnnouncement({
+            title: document.getElementById('ann-title').value,
+            text: document.getElementById('ann-text').value,
+            date: new Date().toISOString().slice(0, 10),
+            author: auth.short || auth.name
+          });
+          await renderAnnouncements();
+          e.target.reset();
+          toast('Объявление опубликовано');
+        } catch (err) {
+          toast('Ошибка: ' + (err.message || err));
+        }
+      });
+
+      document.getElementById('materialForm').addEventListener('submit', async e => {
+        e.preventDefault();
+        try {
+          await addMaterial({
+            title: document.getElementById('mat-title').value,
+            text: document.getElementById('mat-text').value,
+            category: document.getElementById('mat-cat').value
+          });
+          await renderMaterials();
+          e.target.reset();
+          toast('Материал сохранён');
+        } catch (err) {
+          toast('Ошибка: ' + (err.message || err));
+        }
+      });
+
+      await Promise.all([renderSchedule(), renderGrades(), renderAnnouncements(), renderMaterials()]);
+    })();
+  </script>
+</body>
+</html>

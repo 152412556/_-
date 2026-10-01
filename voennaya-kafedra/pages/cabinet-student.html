@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Личный кабинет студента — Военная кафедра</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo">
+        <div class="logo-emblem">★</div>
+        <div class="logo-text">
+          <div class="uni">НАО «Торайгыров университет»</div>
+          <div class="dept">Военная кафедра</div>
+        </div>
+      </a>
+      <nav class="nav-main">
+        <a href="../index.html">Главная</a>
+        <a href="o-kafedre.html">О кафедре</a>
+        <a href="postuplenie.html">Поступление</a>
+        <a href="podgotovka.html">Подготовка</a>
+        <a href="studentu.html">Студенту</a>
+        <a href="novosti.html">Новости</a>
+        <a href="dokumenty.html">Документы</a>
+        <a href="kontakty.html">Контакты</a>
+      </nav>
+      <div class="header-actions">
+        <span class="badge-role">Студент</span>
+        <a href="#" class="btn-login" onclick="logout(); return false;">Выйти</a>
+        <button class="burger" id="burger" aria-label="Меню">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="mobile-nav" id="mobileNav">
+      <a href="../index.html">Главная</a>
+      <a href="cabinet-student.html" class="active">Кабинет</a>
+      <a href="#" onclick="logout(); return false;" class="btn-login">Выйти</a>
+    </div>
+  </header>
+
+  <div class="cabinet-layout">
+    <aside class="cabinet-sidebar">
+      <div class="cabinet-user">
+        <div class="cabinet-avatar" id="sideAvatar">ИА</div>
+        <h3 id="sideName">Студент</h3>
+        <p id="sideMeta">Студент</p>
+      </div>
+      <nav class="cabinet-menu">
+        <a href="#overview" class="active" data-section="overview">📊 Обзор</a>
+        <a href="#schedule" data-section="schedule">📅 Расписание</a>
+        <a href="#grades" data-section="grades">📝 Оценки</a>
+        <a href="#materials" data-section="materials">📚 Материалы</a>
+        <a href="#announce" data-section="announce">📢 Объявления</a>
+        <a href="#" class="logout" onclick="logout(); return false;">🚪 Выйти</a>
+      </nav>
+    </aside>
+
+    <div class="cabinet-main">
+      <section id="sec-overview">
+        <h1>Личный кабинет</h1>
+        <p class="page-sub" id="welcomeText">Загрузка...</p>
+        <div class="stats-grid">
+          <div class="stat-card"><div class="value" id="statLessons">—</div><div class="label">Занятий в неделю</div></div>
+          <div class="stat-card"><div class="value" id="statAvg">—</div><div class="label">Средний балл</div></div>
+          <div class="stat-card"><div class="value" id="statGrades">—</div><div class="label">Оценок</div></div>
+          <div class="stat-card"><div class="value" id="statMats">—</div><div class="label">Материалов</div></div>
+        </div>
+        <div class="cabinet-section">
+          <div class="cabinet-section-header"><h2>Ближайшие занятия</h2></div>
+          <div class="cabinet-section-body">
+            <table class="cabinet-table" id="previewSchedule">
+              <thead><tr><th>День</th><th>Время</th><th>Дисциплина</th><th>Аудитория</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="sec-schedule" style="display:none">
+        <h1>Расписание занятий</h1>
+        <p class="page-sub">Персональное расписание вашей группы</p>
+        <div class="cabinet-section">
+          <div class="cabinet-section-body">
+            <table class="cabinet-table" id="fullSchedule">
+              <thead><tr><th>День</th><th>Время</th><th>Дисциплина</th><th>Аудитория</th><th>Преподаватель</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="sec-grades" style="display:none">
+        <h1>Успеваемость</h1>
+        <p class="page-sub">Оценки по дисциплинам</p>
+        <div class="cabinet-section">
+          <div class="cabinet-section-body">
+            <table class="cabinet-table" id="gradesTable">
+              <thead><tr><th>Дисциплина</th><th>Оценка</th><th>Дата</th><th>Преподаватель</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="sec-materials" style="display:none">
+        <h1>Учебные материалы</h1>
+        <p class="page-sub">Памятки, методички, меры безопасности</p>
+        <div id="materialsList"></div>
+      </section>
+
+      <section id="sec-announce" style="display:none">
+        <h1>Объявления</h1>
+        <p class="page-sub">Актуальные объявления кафедры</p>
+        <div id="announceList"></div>
+      </section>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-config.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    initSupabase();
+
+    (async function init() {
+      const auth = await requireAuthAsync(['student']);
+      if (!auth) return;
+
+      document.getElementById('sideAvatar').textContent = auth.initials || 'С';
+      document.getElementById('sideName').textContent = auth.short || auth.name;
+      document.getElementById('sideMeta').textContent = 'Студент · ' + (auth.group || '');
+      document.getElementById('welcomeText').textContent =
+        auth.name + (auth.group ? ' · группа ' + auth.group : '') +
+        (auth.specialty ? ' · ' + auth.specialty : '');
+
+      function showSection(id) {
+        ['overview', 'schedule', 'grades', 'materials', 'announce'].forEach(s => {
+          const el = document.getElementById('sec-' + s);
+          if (el) el.style.display = s === id ? 'block' : 'none';
+        });
+        document.querySelectorAll('.cabinet-menu a[data-section]').forEach(a => {
+          a.classList.toggle('active', a.dataset.section === id);
+        });
+      }
+
+      document.querySelectorAll('.cabinet-menu a[data-section]').forEach(a => {
+        a.addEventListener('click', e => {
+          e.preventDefault();
+          showSection(a.dataset.section);
+        });
+      });
+
+      const [scheduleAll, gradesAll, materials, announcements] = await Promise.all([
+        getSchedule(),
+        getGrades(),
+        getMaterials(),
+        getAnnouncements()
+      ]);
+
+      const schedule = scheduleAll.filter(s => !auth.group || s.group === auth.group || true);
+      const grades = gradesAll.filter(g =>
+        g.studentId === auth.id ||
+        g.student === auth.name ||
+        (auth.short && g.student && g.student.includes(auth.short.split(' ')[0]))
+      );
+
+      document.getElementById('statLessons').textContent = schedule.length;
+      document.getElementById('statGrades').textContent = grades.length;
+      document.getElementById('statMats').textContent = materials.length;
+      if (grades.length) {
+        document.getElementById('statAvg').textContent =
+          (grades.reduce((s, g) => s + g.grade, 0) / grades.length).toFixed(1);
+      }
+
+      const prevBody = document.querySelector('#previewSchedule tbody');
+      schedule.slice(0, 4).forEach(s => {
+        prevBody.innerHTML += `<tr><td>${s.day}</td><td>${s.time}</td><td>${s.subject}</td><td>${s.room || ''}</td></tr>`;
+      });
+
+      const fullBody = document.querySelector('#fullSchedule tbody');
+      if (!schedule.length) {
+        fullBody.innerHTML = '<tr><td colspan="5" class="empty-state">Расписание пока не опубликовано</td></tr>';
+      } else {
+        schedule.forEach(s => {
+          fullBody.innerHTML += `<tr><td>${s.day}</td><td>${s.time}</td><td>${s.subject}</td><td>${s.room || ''}</td><td>${s.teacher || ''}</td></tr>`;
+        });
+      }
+
+      const gradesBody = document.querySelector('#gradesTable tbody');
+      if (!grades.length) {
+        gradesBody.innerHTML = '<tr><td colspan="4" class="empty-state">Оценок пока нет</td></tr>';
+      } else {
+        grades.forEach(g => {
+          gradesBody.innerHTML += `<tr>
+            <td>${g.subject}</td>
+            <td><span class="grade ${gradeClass(g.grade)}">${g.grade}</span></td>
+            <td>${g.date || ''}</td>
+            <td>${g.teacher || ''}</td>
+          </tr>`;
+        });
+      }
+
+      const matList = document.getElementById('materialsList');
+      if (!materials.length) {
+        matList.innerHTML = '<div class="empty-state">Материалов пока нет</div>';
+      } else {
+        materials.forEach(m => {
+          matList.innerHTML += `<div class="cabinet-section">
+            <div class="cabinet-section-header"><h2>${m.title}</h2><span class="badge-role">${m.category}</span></div>
+            <div class="cabinet-section-body"><p style="margin:0;color:var(--text-muted);font-size:14px;line-height:1.6">${m.text}</p></div>
+          </div>`;
+        });
+      }
+
+      const annList = document.getElementById('announceList');
+      if (!announcements.length) {
+        annList.innerHTML = '<div class="empty-state">Объявлений нет</div>';
+      } else {
+        announcements.forEach(a => {
+          annList.innerHTML += `<div class="cabinet-section">
+            <div class="cabinet-section-header"><h2>${a.title}</h2><span style="font-size:12px;color:var(--text-muted)">${a.date}</span></div>
+            <div class="cabinet-section-body">
+              <p style="margin:0 0 8px;color:var(--text-muted);font-size:14px;line-height:1.6">${a.text}</p>
+              <small style="color:var(--text-muted)">Автор: ${a.author || ''}</small>
+            </div>
+          </div>`;
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

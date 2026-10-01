@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Расписание — Военная кафедра</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .schedule-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .edit-panel {
+      background: #f0f6fc;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 24px;
+      display: none;
+    }
+    .edit-panel.visible {
+      display: block;
+    }
+    .edit-panel h3 {
+      margin-bottom: 16px;
+      color: var(--primary-dark);
+      font-size: 16px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .form-grid .form-row label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .form-grid input, .form-grid select {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+    }
+    .form-grid input:focus, .form-grid select:focus {
+      border-color: var(--accent);
+    }
+    .teacher-only {
+      display: none;
+    }
+    .teacher-only.show {
+      display: inline-flex;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-top">
+      <nav class="nav-main">
+        <a href="../index.html">🏠 Главная</a>
+        <a href="cikly.html">📋 Циклы</a>
+        <a href="normativnye.html">📄 Нормативные документы</a>
+        <a href="dokumenty.html">📁 Документы кафедры</a>
+        <a href="biblioteka.html">📚 Библиотека</a>
+        <a href="raspisanie.html" class="active">📅 Расписание</a>
+        <a href="testirovanie.html">✅ Тестирование</a>
+      </nav>
+      <div class="header-right">
+        <a href="login.html" class="user-profile">
+          <div class="user-avatar" id="header-avatar">?</div>
+          <div class="user-info">
+            <div class="name" id="header-name">Войти</div>
+            <div class="role" id="header-role">Личный кабинет</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div class="page-header">
+    <div class="page-header-inner">
+      <h1>📅 Расписание</h1>
+      <div class="breadcrumb"><a href="../index.html">Главная</a> / Расписание</div>
+    </div>
+  </div>
+
+  <div class="page-content">
+    <div class="content-card">
+      <div class="schedule-toolbar">
+        <h2 style="margin:0;color:var(--primary-dark);font-size:18px">Расписание занятий</h2>
+        <button class="btn btn-primary teacher-only" id="toggle-edit-btn" onclick="toggleEditPanel()">
+          ✏️ Редактировать расписание
+        </button>
+      </div>
+
+      <div class="edit-panel" id="edit-panel">
+        <h3>Добавить / изменить занятие</h3>
+        <input type="hidden" id="edit-id">
+        <div class="form-grid">
+          <div class="form-row">
+            <label>День недели *</label>
+            <select id="edit-day">
+              <option value="Понедельник">Понедельник</option>
+              <option value="Вторник">Вторник</option>
+              <option value="Среда">Среда</option>
+              <option value="Четверг">Четверг</option>
+              <option value="Пятница">Пятница</option>
+              <option value="Суббота">Суббота</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label>Время *</label>
+            <input type="text" id="edit-time" placeholder="09:00–10:30">
+          </div>
+          <div class="form-row">
+            <label>Дисциплина *</label>
+            <input type="text" id="edit-subject" placeholder="Строевая подготовка">
+          </div>
+          <div class="form-row">
+            <label>Взвод / Курс</label>
+            <input type="text" id="edit-group" placeholder="1 взвод / 2 курс">
+          </div>
+          <div class="form-row">
+            <label>Аудитория</label>
+            <input type="text" id="edit-room" placeholder="Ауд. 101">
+          </div>
+          <div class="form-row">
+            <label>Преподаватель</label>
+            <input type="text" id="edit-teacher" placeholder="Иванов И.И.">
+          </div>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button class="btn btn-primary" onclick="saveScheduleItem()">💾 Сохранить</button>
+          <button class="btn btn-outline" onclick="clearEditForm()">Очистить</button>
+        </div>
+      </div>
+
+      <div id="schedule-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>День</th>
+              <th>Время</th>
+              <th>Дисциплина</th>
+              <th>Взвод / Курс</th>
+              <th>Аудитория</th>
+              <th>Преподаватель</th>
+              <th class="teacher-only" style="width:100px"></th>
+            </tr>
+          </thead>
+          <tbody id="schedule-body"></tbody>
+        </table>
+        <p id="schedule-empty" style="display:none;color:var(--text-muted);margin-top:16px;font-size:14px">
+          Расписание пока пустое. Преподаватели могут добавить занятия.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-slogan">ЧЕСТЬ. ДОЛГ. ОТВАГА.</div>
+    </div>
+  </footer>
+
+  <script src="../js/main.js"></script>
+  <script>
+    const SCHEDULE_KEY = 'vk_schedule';
+    let isTeacher = false;
+
+    const user = JSON.parse(localStorage.getItem('vk_user') || 'null');
+    if (user) {
+      document.getElementById('header-name').textContent = user.name || 'Пользователь';
+      document.getElementById('header-avatar').textContent = (user.name || '?').charAt(0).toUpperCase();
+      document.getElementById('header-role').textContent = user.role === 'teacher' ? 'Преподаватель' : 'Студент';
+      isTeacher = user.role === 'teacher';
+    }
+
+    if (isTeacher) {
+      document.querySelectorAll('.teacher-only').forEach(el => el.classList.add('show'));
+    }
+
+    function getSchedule() {
+      try {
+        const data = JSON.parse(localStorage.getItem(SCHEDULE_KEY));
+        if (data && data.length) return data;
+      } catch(e) {}
+      return [
+        { id: 1, day: 'Понедельник', time: '09:00–10:30', subject: 'Строевая подготовка', group: '—', room: '—', teacher: '—' },
+        { id: 2, day: 'Вторник', time: '11:00–12:30', subject: 'Огневая подготовка', group: '—', room: '—', teacher: '—' },
+        { id: 3, day: 'Среда', time: '14:00–15:30', subject: 'Тактическая подготовка', group: '—', room: '—', teacher: '—' }
+      ];
+    }
+
+    function saveSchedule(list) {
+      localStorage.setItem(SCHEDULE_KEY, JSON.stringify(list));
+    }
+
+    function renderSchedule() {
+      const list = getSchedule();
+      const tbody = document.getElementById('schedule-body');
+      const empty = document.getElementById('schedule-empty');
+
+      if (list.length === 0) {
+        tbody.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+      }
+      empty.style.display = 'none';
+
+      const dayOrder = ['Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
+      list.sort((a, b) => dayOrder.indexOf(a.day) - dayOrder.indexOf(b.day));
+
+      tbody.innerHTML = list.map(item => `
+        <tr>
+          <td>${item.day}</td>
+          <td>${item.time}</td>
+          <td>${item.subject}</td>
+          <td>${item.group || '—'}</td>
+          <td>${item.room || '—'}</td>
+          <td>${item.teacher || '—'}</td>
+          <td class="teacher-only ${isTeacher ? 'show' : ''}">
+            <button class="btn btn-outline btn-sm" onclick='editItem(${JSON.stringify(item)})'>✏️</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteItem(${item.id})">🗑</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function toggleEditPanel() {
+      const panel = document.getElementById('edit-panel');
+      panel.classList.toggle('visible');
+      if (!panel.classList.contains('visible')) clearEditForm();
+    }
+
+    function clearEditForm() {
+      document.getElementById('edit-id').value = '';
+      document.getElementById('edit-day').value = 'Понедельник';
+      document.getElementById('edit-time').value = '';
+      document.getElementById('edit-subject').value = '';
+      document.getElementById('edit-group').value = '';
+      document.getElementById('edit-room').value = '';
+      document.getElementById('edit-teacher').value = '';
+    }
+
+    function editItem(item) {
+      document.getElementById('edit-panel').classList.add('visible');
+      document.getElementById('edit-id').value = item.id;
+      document.getElementById('edit-day').value = item.day;
+      document.getElementById('edit-time').value = item.time;
+      document.getElementById('edit-subject').value = item.subject;
+      document.getElementById('edit-group').value = item.group || '';
+      document.getElementById('edit-room').value = item.room || '';
+      document.getElementById('edit-teacher').value = item.teacher || '';
+      document.getElementById('edit-panel').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function saveScheduleItem() {
+      const id = document.getElementById('edit-id').value;
+      const day = document.getElementById('edit-day').value;
+      const time = document.getElementById('edit-time').value.trim();
+      const subject = document.getElementById('edit-subject').value.trim();
+      const group = document.getElementById('edit-group').value.trim();
+      const room = document.getElementById('edit-room').value.trim();
+      const teacher = document.getElementById('edit-teacher').value.trim();
+
+      if (!time || !subject) {
+        alert('Укажите время и дисциплину');
+        return;
+      }
+
+      let list = getSchedule();
+
+      if (id) {
+        const idx = list.findIndex(i => i.id == id);
+        if (idx !== -1) {
+          list[idx] = { id: Number(id), day, time, subject, group, room, teacher };
+        }
+      } else {
+        list.push({
+          id: Date.now(),
+          day, time, subject, group, room, teacher
+        });
+      }
+
+      saveSchedule(list);
+      clearEditForm();
+      document.getElementById('edit-panel').classList.remove('visible');
+      renderSchedule();
+      alert('Расписание обновлено');
+    }
+
+    function deleteItem(id) {
+      if (!confirm('Удалить это занятие из расписания?')) return;
+      const list = getSchedule().filter(i => i.id !== id);
+      saveSchedule(list);
+      renderSchedule();
+    }
+
+    renderSchedule();
+  </script>
+</body>
+</html>

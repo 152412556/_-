@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Личный кабинет — Военная кафедра</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-config.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    initSupabase();
+    (async function () {
+      if (isSupabaseMode()) {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) { location.href = 'login.html'; return; }
+        const profile = await fetchProfile(session.user.id);
+        if (!profile) { location.href = 'login.html'; return; }
+        const u = mapProfile(profile, session.user);
+        setAuth(u);
+        location.href = u.role === 'teacher' ? 'cabinet-teacher.html' : 'cabinet-student.html';
+      } else {
+        const auth = getAuth();
+        if (!auth) location.href = 'login.html';
+        else if (auth.role === 'teacher') location.href = 'cabinet-teacher.html';
+        else location.href = 'cabinet-student.html';
+      }
+    })();
+  </script>
+</head>
+<body>
+  <p style="font-family:sans-serif;padding:40px;text-align:center;color:#666">Перенаправление в личный кабинет...</p>
+</body>
+</html>

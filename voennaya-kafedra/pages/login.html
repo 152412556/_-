@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Вход — Военная кафедра</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .login-wrap {
+      min-height: calc(100vh - var(--header-h));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      background: var(--bg);
+    }
+    .login-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      padding: 36px 40px;
+      width: 100%;
+      max-width: 460px;
+    }
+    .login-card h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 6px;
+      text-align: center;
+    }
+    .login-card .sub {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+    .login-card .btn {
+      width: 100%;
+      margin-top: 12px;
+      cursor: pointer;
+      border: none;
+    }
+    #loginError, #regError { display: none; margin-bottom: 12px; }
+    .mode-badge {
+      text-align: center;
+      font-size: 12px;
+      margin-bottom: 16px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .mode-demo { background: #fff3e0; color: #e65100; }
+    .mode-live { background: #e8f5e9; color: #1b7a3d; }
+    .auth-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--border);
+    }
+    .auth-tab {
+      flex: 1;
+      padding: 12px 10px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      user-select: none;
+      border: none;
+      background: transparent;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      font-family: inherit;
+    }
+    .auth-tab:hover { color: var(--primary-dark); }
+    .auth-tab.active {
+      color: var(--primary-dark);
+      border-bottom-color: var(--accent);
+    }
+    #loginPanel, #registerPanel { display: none; }
+    #loginPanel.active, #registerPanel.active { display: block; }
+    .form-group { margin-bottom: 14px; }
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--primary-dark);
+      margin-bottom: 6px;
+    }
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-family: inherit;
+      box-sizing: border-box;
+      background: #fff;
+    }
+    .form-group input:focus, .form-group select:focus {
+      outline: none;
+      border-color: var(--primary-mid);
+      box-shadow: 0 0 0 3px rgba(19,58,102,0.1);
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo">
+        <div class="logo-emblem">★</div>
+        <div class="logo-text">
+          <div class="uni">НАО «Торайгыров университет»</div>
+          <div class="dept">Военная кафедра</div>
+        </div>
+      </a>
+      <nav class="nav-main">
+        <a href="../index.html">Главная</a>
+        <a href="o-kafedre.html">О кафедре</a>
+        <a href="postuplenie.html">Поступление</a>
+        <a href="podgotovka.html">Подготовка</a>
+        <a href="studentu.html">Студенту</a>
+        <a href="novosti.html">Новости</a>
+        <a href="dokumenty.html">Документы</a>
+        <a href="kontakty.html">Контакты</a>
+      </nav>
+      <div class="header-actions">
+        <a href="login.html" class="btn-login">Войти</a>
+        <button class="burger" id="burger" aria-label="Меню" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="mobile-nav" id="mobileNav">
+      <a href="../index.html">Главная</a>
+      <a href="login.html" class="btn-login">Войти</a>
+    </div>
+  </header>
+
+  <div class="login-wrap">
+    <div class="login-card">
+      <h1>Вход в личный кабинет</h1>
+      <p class="sub">Студенты и преподаватели военной кафедры</p>
+
+      <div id="modeBadge" class="mode-badge mode-demo">Режим: DEMO</div>
+
+      <div class="auth-tabs">
+        <button type="button" class="auth-tab active" id="tabLogin" data-panel="login">Вход</button>
+        <button type="button" class="auth-tab" id="tabRegister" data-panel="register">Регистрация</button>
+      </div>
+
+      <!-- ВХОД -->
+      <div id="loginPanel" class="active">
+        <div class="role-tabs" id="roleTabs">
+          <div class="role-tab active" data-role="student">
+            <div class="icon">🎓</div>
+            <div class="title">Студент</div>
+            <div class="desc">Расписание, оценки</div>
+          </div>
+          <div class="role-tab" data-role="teacher">
+            <div class="icon">📋</div>
+            <div class="title">Преподаватель</div>
+            <div class="desc">Оценки, объявления</div>
+          </div>
+        </div>
+
+        <div id="loginError" class="alert alert-error"></div>
+
+        <div class="form-group">
+          <label for="login">Логин</label>
+          <input type="text" id="login" placeholder="логин или email" autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label for="pass">Пароль</label>
+          <input type="password" id="pass" placeholder="пароль" autocomplete="current-password">
+        </div>
+        <button type="button" class="btn btn-primary" id="loginBtn">Войти</button>
+
+        <div class="demo-accounts" id="demoHint" style="margin-top:16px">
+          <strong>Быстрый вход:</strong><br>
+          Студент — <code>student</code> / <code>student</code><br>
+          Преподаватель — <code>teacher</code> / <code>teacher</code><br>
+          <span style="opacity:0.85">Или создайте аккаунт на вкладке «Регистрация»</span>
+        </div>
+      </div>
+
+      <!-- РЕГИСТРАЦИЯ -->
+      <div id="registerPanel">
+        <div id="regError" class="alert alert-error"></div>
+        <div id="regSuccess" class="alert alert-success" style="display:none"></div>
+
+        <div class="form-group">
+          <label for="reg-name">ФИО *</label>
+          <input type="text" id="reg-name" placeholder="Иванов Алексей Сергеевич">
+        </div>
+        <div class="form-group">
+          <label for="reg-email">Логин *</label>
+          <input type="text" id="reg-email" placeholder="ivanov">
+        </div>
+        <div class="form-group">
+          <label for="reg-pass">Пароль * (мин. 4 символа)</label>
+          <input type="password" id="reg-pass" placeholder="••••">
+        </div>
+        <div class="form-group">
+          <label for="reg-role">Роль *</label>
+          <select id="reg-role">
+            <option value="student">Студент</option>
+            <option value="teacher">Преподаватель</option>
+          </select>
+        </div>
+        <div class="form-group" id="reg-group-wrap">
+          <label for="reg-group">Группа</label>
+          <input type="text" id="reg-group" placeholder="ВК-301" value="ВК-301">
+        </div>
+        <div class="form-group" id="reg-rank-wrap" style="display:none">
+          <label for="reg-rank">Звание</label>
+          <input type="text" id="reg-rank" placeholder="Майор запаса">
+        </div>
+        <button type="button" class="btn btn-primary" id="regBtn">Зарегистрироваться</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-config.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    (function () {
+      try { initSupabase(); } catch (e) { console.warn(e); }
+
+      var modeBadge = document.getElementById('modeBadge');
+      if (typeof isSupabaseMode === 'function' && isSupabaseMode()) {
+        modeBadge.textContent = 'Режим: Supabase';
+        modeBadge.className = 'mode-badge mode-live';
+      }
+
+      var selectedRole = 'student';
+      var loginPanel = document.getElementById('loginPanel');
+      var registerPanel = document.getElementById('registerPanel');
+      var tabLogin = document.getElementById('tabLogin');
+      var tabRegister = document.getElementById('tabRegister');
+
+      function showPanel(name) {
+        if (name === 'register') {
+          loginPanel.classList.remove('active');
+          registerPanel.classList.add('active');
+          tabLogin.classList.remove('active');
+          tabRegister.classList.add('active');
+        } else {
+          registerPanel.classList.remove('active');
+          loginPanel.classList.add('active');
+          tabRegister.classList.remove('active');
+          tabLogin.classList.add('active');
+        }
+      }
+
+      tabLogin.onclick = function () { showPanel('login'); };
+      tabRegister.onclick = function () { showPanel('register'); };
+
+      // Роли на форме входа
+      document.querySelectorAll('.role-tab').forEach(function (tab) {
+        tab.onclick = function () {
+          document.querySelectorAll('.role-tab').forEach(function (t) { t.classList.remove('active'); });
+          tab.classList.add('active');
+          selectedRole = tab.getAttribute('data-role');
+          if (selectedRole === 'student') {
+            document.getElementById('login').value = 'student';
+            document.getElementById('pass').value = 'student';
+          } else {
+            document.getElementById('login').value = 'teacher';
+            document.getElementById('pass').value = 'teacher';
+          }
+        };
+      });
+
+      document.getElementById('login').value = 'student';
+      document.getElementById('pass').value = 'student';
+
+      // Переключение полей группа / звание
+      document.getElementById('reg-role').onchange = function () {
+        var isTeacher = this.value === 'teacher';
+        document.getElementById('reg-group-wrap').style.display = isTeacher ? 'none' : 'block';
+        document.getElementById('reg-rank-wrap').style.display = isTeacher ? 'block' : 'none';
+      };
+
+      // ВХОД
+      document.getElementById('loginBtn').onclick = async function () {
+        var errBox = document.getElementById('loginError');
+        var btn = document.getElementById('loginBtn');
+        errBox.style.display = 'none';
+        btn.disabled = true;
+        btn.textContent = 'Вход...';
+        try {
+          var result = await login(
+            document.getElementById('login').value.trim(),
+            document.getElementById('pass').value,
+            selectedRole
+          );
+          if (result.ok) {
+            window.location.href = result.user.role === 'teacher'
+              ? 'cabinet-teacher.html'
+              : 'cabinet-student.html';
+            return;
+          }
+          errBox.style.display = 'block';
+          errBox.textContent = result.error || 'Ошибка входа';
+        } catch (err) {
+          errBox.style.display = 'block';
+          errBox.textContent = (err && err.message) || 'Ошибка';
+        }
+        btn.disabled = false;
+        btn.textContent = 'Войти';
+      };
+
+      // РЕГИСТРАЦИЯ
+      document.getElementById('regBtn').onclick = async function () {
+        var errBox = document.getElementById('regError');
+        var okBox = document.getElementById('regSuccess');
+        var btn = document.getElementById('regBtn');
+        errBox.style.display = 'none';
+        okBox.style.display = 'none';
+
+        var name = document.getElementById('reg-name').value.trim();
+        var loginVal = document.getElementById('reg-email').value.trim();
+        var passVal = document.getElementById('reg-pass').value;
+        var roleVal = document.getElementById('reg-role').value;
+
+        if (!name) {
+          errBox.style.display = 'block';
+          errBox.textContent = 'Укажите ФИО';
+          return;
+        }
+        if (!loginVal) {
+          errBox.style.display = 'block';
+          errBox.textContent = 'Укажите логин';
+          return;
+        }
+        if (!passVal || passVal.length < 4) {
+          errBox.style.display = 'block';
+          errBox.textContent = 'Пароль не короче 4 символов';
+          return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = 'Регистрация...';
+
+        try {
+          var result = await register({
+            email: loginVal,
+            password: passVal,
+            fullName: name,
+            role: roleVal,
+            groupName: document.getElementById('reg-group').value.trim() || null,
+            rank: document.getElementById('reg-rank').value.trim() || null
+          });
+
+          if (result.ok) {
+            okBox.style.display = 'block';
+            okBox.textContent = 'Готово! Аккаунт создан. Перейдите на «Вход» и войдите.';
+            document.getElementById('login').value = loginVal;
+            document.getElementById('pass').value = passVal;
+            selectedRole = roleVal;
+            document.querySelectorAll('.role-tab').forEach(function (t) {
+              t.classList.toggle('active', t.getAttribute('data-role') === roleVal);
+            });
+            // Через 1.2 сек переключить на вход
+            setTimeout(function () { showPanel('login'); }, 1200);
+          } else {
+            errBox.style.display = 'block';
+            errBox.textContent = result.error || 'Ошибка регистрации';
+          }
+        } catch (err) {
+          errBox.style.display = 'block';
+          errBox.textContent = (err && err.message) || 'Ошибка регистрации';
+        }
+
+        btn.disabled = false;
+        btn.textContent = 'Зарегистрироваться';
+      };
+
+      // Enter на полях
+      document.getElementById('pass').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') document.getElementById('loginBtn').click();
+      });
+      document.getElementById('reg-pass').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') document.getElementById('regBtn').click();
+      });
+
+      // Если уже вошли — редирект
+      try {
+        var auth = getAuth();
+        if (auth) {
+          window.location.href = auth.role === 'teacher' ? 'cabinet-teacher.html' : 'cabinet-student.html';
+        }
+      } catch (e) {}
+    })();
+  </script>
+</body>
+</html>
